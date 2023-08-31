@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: hello
+  version: 0.0.1
+servers:
+- url: http://localhost:8080/api/v1/
+  description: Dev server
+paths:
+  /clouds:
+    get:
+      tags:
+      - Clouds
+      summary: Method of getting cloud resource
+      operationId: get_all_clouds
+      responses:
+        "200":
+          description: successful responce w/ list of resource cloud
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Clouds'
+        default:
+          description: any answer
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.clouds_controller
+    post:
+      tags:
+      - Clouds
+      summary: Create order in cloud
+      operationId: create_cloud
+      requestBody:
+        content:
+          adplication/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      responses:
+        "200":
+          description: successful responce w/ list of resource cloud
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Clouds'
+        default:
+          description: any answer
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.clouds_controller
+  /clouds/{cloud_id}:
+    get:
+      tags:
+      - Clouds
+      summary: method of getting order by ID
+      operationId: get_cloud_by_id
+      parameters:
+      - name: cloud_id
+        in: path
+        description: Cloud Id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: f102b615
+      responses:
+        "200":
+          description: successful responce order
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Clouds'
+        default:
+          description: any answer
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.clouds_controller
+    delete:
+      tags:
+      - Clouds
+      summary: Cancellation method in cloud by ID
+      operationId: cancel_cloud_by_id
+      parameters:
+      - name: cloud_id
+        in: path
+        description: identificator order in cloud
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: f102b615
+      responses:
+        "200":
+          description: successful remove order
+          content:
+            adplication/json: {}
+        "404":
+          description: order not found
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: any answer
+          content:
+            adplication/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      x-openapi-router-controller: swagger_server.controllers.clouds_controller
+components:
+  schemas:
+    Cloud:
+      required:
+      - CPU
+      - HDD
+      - OS
+      - RAM
+      - id_client
+      type: object
+      properties:
+        cloud_id:
+          type: string
+          example: f102b615
+        id_client:
+          type: string
+          example: f102b615
+        OS:
+          type: string
+          description: Operation System Server
+          enum:
+          - Windows
+          - Linux
+        RAM:
+          type: string
+          description: Amount of RAM
+          example: "128"
+        CPU:
+          type: string
+          description: Number of processor
+          example: "8"
+      example:
+        OS: Windows
+        id_client: f102b615
+        CPU: "8"
+        cloud_id: f102b615
+        RAM: "128"
+    Clouds:
+      type: array
+      items:
+        $ref: '#/components/schemas/Cloud'
+    Error:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
